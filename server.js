@@ -17,6 +17,7 @@ const transactionRoutes = require('./routes/transactionRoutes');
 const budgetRoutes = require('./routes/budgetRoutes'); // ✅ Budget Management
 const reportRoutes = require("./routes/reportRoutes");
 const goalRoutes = require("./routes/goalRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
 // 🔹 Use Routes
 app.use('/api/users', userRoutes);
 app.use('/api/transactions', transactionRoutes);
@@ -24,6 +25,8 @@ app.use('/api/transactions', transactionRoutes);
 app.use('/api/budgets', budgetRoutes); // ✅ Enable Budget API
 app.use("/api/reports", reportRoutes); 
 app.use("/api/goals", goalRoutes);
+app.use("/api/dashboard", dashboardRoutes);
+
 
 
 
