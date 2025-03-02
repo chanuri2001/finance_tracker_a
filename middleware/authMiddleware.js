@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 
 const protect = (req, res, next) => {
     let token = req.header('Authorization');
-
+    
     if (!token || !token.startsWith("Bearer ")) {
         return res.status(401).json({ error: 'Not authorized, no token' });
     }
