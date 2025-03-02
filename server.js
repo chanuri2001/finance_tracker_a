@@ -16,13 +16,14 @@ const transactionRoutes = require('./routes/transactionRoutes');
 /*const categoryRoutes = require('./routes/categoryRoutes'); // ✅ Category Management*/
 const budgetRoutes = require('./routes/budgetRoutes'); // ✅ Budget Management
 const reportRoutes = require("./routes/reportRoutes");
-
+const goalRoutes = require("./routes/goalRoutes");
 // 🔹 Use Routes
 app.use('/api/users', userRoutes);
 app.use('/api/transactions', transactionRoutes);
 /*app.use('/api/categories', categoryRoutes); // ✅ Enable Category API*/
 app.use('/api/budgets', budgetRoutes); // ✅ Enable Budget API
 app.use("/api/reports", reportRoutes); 
+app.use("/api/goals", goalRoutes);
 
 
 
