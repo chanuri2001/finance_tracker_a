@@ -38,15 +38,24 @@ exports.getGoals = async (req, res) => {
 exports.updateGoal = async (req, res) => {
     try {
         const { savedAmount } = req.body;
-        let goal = await Goal.findById(req.params.id);
+        const goalId = req.params.id;
 
-        if (!goal) return res.status(404).json({ error: "Goal not found" });
+        // 🔹 Validate Goal ID Format
+        if (!mongoose.Types.ObjectId.isValid(goalId)) {
+            return res.status(400).json({ error: "Invalid goal ID format" });
+        }
 
+        const goal = await Goal.findById(goalId);
+        if (!goal) {
+            return res.status(404).json({ error: "Goal not found" });
+        }
+
+        // 🔹 Ensure User Owns the Goal
         if (goal.user.toString() !== req.user.id) {
             return res.status(403).json({ error: "Not authorized" });
         }
 
-        goal.savedAmount += savedAmount;
+        goal.savedAmount = savedAmount ?? goal.savedAmount;
         await goal.save();
 
         res.json(goal);

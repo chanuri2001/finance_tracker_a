@@ -2,9 +2,11 @@
   "name": "finance-tracker",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+ "scripts": {
+  "test": "jest --detectOpenHandles --forceExit",
+  "test:clear": "node scripts/clearTestDB.js"
+},
+
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -20,5 +22,9 @@
     "node-cron": "^3.0.3",
     "nodemailer": "^6.10.0",
     "nodemon": "^3.1.9"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0"
   }
 }
