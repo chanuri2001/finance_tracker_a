@@ -13,7 +13,8 @@ const { protect, adminOnly } = require('../middleware/authMiddleware');
 
 router.post('/register', registerUser);
 router.post('/login', login);
-router.get('/profile', protect, getProfile);
+router.get('/me', protect, getProfile);
+
 
 // ✅ Admin Routes
 router.get('/all-users', protect, adminOnly, getAllUsers);

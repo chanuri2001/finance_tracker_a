@@ -8,13 +8,13 @@ const {
     deleteBudget, 
     budgetAlerts, 
     budgetRecommendations 
-} = require('../controllers/budgetController'); // ✅ Ensure all functions are imported
+} = require('../controllers/budgetController');
 
 router.post('/', protect, setBudget);
 router.get('/', protect, getBudgets);
 router.put('/:id', protect, updateBudget);
 router.delete('/:id', protect, deleteBudget);
-router.get('/alerts', protect, budgetAlerts);
-router.get('/recommendations', protect, budgetRecommendations);
+router.get('/alerts', protect, budgetAlerts);  // ✅ Added
+router.get('/recommendations', protect, budgetRecommendations);  // ✅ Added
 
 module.exports = router;

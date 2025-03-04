@@ -7,19 +7,31 @@ exports.registerUser = async (req, res) => {
     try {
         const { name, email, password, role } = req.body;
 
-        if (!['admin', 'user'].includes(role)) {
+        // Validate role
+        if (!role || !['admin', 'user'].includes(role)) {
             return res.status(400).json({ error: 'Invalid role. Allowed roles: admin, user' });
         }
 
+        // Check if user already exists
         let user = await User.findOne({ email });
         if (user) return res.status(400).json({ error: 'User already exists' });
 
+        // Hash password and save user
         const hashedPassword = await bcrypt.hash(password, 10);
         user = new User({ name, email, password: hashedPassword, role });
 
         await user.save();
-        res.status(201).json({ message: `User registered as ${role} successfully` });
+
+        // Generate JWT token
+        const token = jwt.sign(
+            { id: user._id, role: user.role }, 
+            process.env.JWT_SECRET, 
+            { expiresIn: '1h' }
+        );
+
+        res.status(201).json({ message: `User registered as ${role} successfully`, token });
     } catch (error) {
+        console.error("Error in registerUser:", error);
         res.status(500).json({ error: 'Server error' });
     }
 };
@@ -43,6 +55,7 @@ exports.login = async (req, res) => {
 
         res.json({ token, userId: user._id, role: user.role });
     } catch (error) {
+        console.error("Error in login:", error);
         res.status(500).json({ error: 'Server error' });
     }
 };
@@ -51,8 +64,11 @@ exports.login = async (req, res) => {
 exports.getProfile = async (req, res) => {
     try {
         const user = await User.findById(req.user.id).select('-password');
+        if (!user) return res.status(404).json({ error: "User not found" });
+
         res.json(user);
     } catch (error) {
+        console.error("Error in getProfile:", error);
         res.status(500).json({ error: 'Server error' });
     }
 };
@@ -63,6 +79,7 @@ exports.getAllUsers = async (req, res) => {
         const users = await User.find().select('-password'); // Exclude passwords
         res.json(users);
     } catch (error) {
+        console.error("Error in getAllUsers:", error);
         res.status(500).json({ error: 'Server error' });
     }
 };
@@ -84,6 +101,7 @@ exports.updateUserRole = async (req, res) => {
 
         res.json({ message: `User role updated to ${role}`, user });
     } catch (error) {
+        console.error("Error in updateUserRole:", error);
         res.status(500).json({ error: 'Server error' });
     }
 };
@@ -99,6 +117,7 @@ exports.deleteUser = async (req, res) => {
 
         res.json({ message: 'User deleted successfully' });
     } catch (error) {
+        console.error("Error in deleteUser:", error);
         res.status(500).json({ error: 'Server error' });
     }
 };
