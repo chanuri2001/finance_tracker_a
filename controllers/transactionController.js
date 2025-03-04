@@ -58,26 +58,26 @@ exports.filterTransactions = async (req, res) => {
 };
 
 // 🔹 Update a Transaction
+const mongoose = require('mongoose');
+
+
 exports.updateTransaction = async (req, res) => {
     try {
-        const { amount, category, type, tags, isRecurring, recurrencePattern, endDate } = req.body;
+        const { id } = req.params;
 
-        let transaction = await Transaction.findById(req.params.id);
-        if (!transaction) return res.status(404).json({ error: 'Transaction not found' });
-
-        if (transaction.user.toString() !== req.user.id) {
-            return res.status(403).json({ error: 'Not authorized' });
+        // 🔹 Validate if the ID is a valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ error: 'Invalid transaction ID format' });
         }
 
-        transaction.amount = amount ?? transaction.amount;
-        transaction.category = category ?? transaction.category;
-        transaction.type = type ?? transaction.type;
-        transaction.tags = tags ?? transaction.tags;
-        transaction.isRecurring = isRecurring ?? transaction.isRecurring;
-        transaction.recurrencePattern = recurrencePattern ?? transaction.recurrencePattern;
-        transaction.endDate = endDate ?? transaction.endDate;
+        const transaction = await Transaction.findById(id);
+        if (!transaction) {
+            return res.status(404).json({ error: 'Transaction not found' });
+        }
 
+        Object.assign(transaction, req.body);
         await transaction.save();
+
         res.json(transaction);
     } catch (error) {
         console.error(error);
